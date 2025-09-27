@@ -511,38 +511,41 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-red-900 via-red-800 to-amber-900">
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-green-800 mb-2">
-            🏨 Rio Nido Lodge
+          <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full mb-6 shadow-2xl">
+            <span className="text-4xl">🏨</span>
+          </div>
+          <h1 className="text-5xl md:text-6xl font-bold text-amber-100 mb-4 tracking-wide">
+            Rio Nido Lodge
           </h1>
-          <p className="text-xl text-gray-600 mb-4">
+          <p className="text-xl text-amber-200 mb-4 font-light">
             Curated Russian River Valley Experiences
           </p>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-amber-300 opacity-90">
             {contact.address} • {contact.phone}
           </p>
         </div>
 
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+        <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-8 mb-8 border border-amber-200">
+          <h2 className="text-3xl font-bold text-red-900 mb-8 text-center">
             Tell Us About Your Perfect Trip
           </h2>
 
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+          <div className="mb-8">
+            <label className="block text-lg font-semibold text-red-800 mb-4">
               How many days will you be staying?
             </label>
-            <div className="flex gap-2">
-              {[1, 2, 3, 4, 5, 6, 7].map(days => (
+            <div className="flex gap-3 flex-wrap">
+              {[1, 2, 3, 4].map(days => (
                 <button
                   key={days}
                   onClick={() => setGuestData(prev => ({ ...prev, tripDuration: days }))}
-                  className={'px-4 py-2 rounded-lg border-2 transition duration-200 ' + 
+                  className={'px-6 py-3 rounded-xl border-2 transition duration-300 font-semibold ' + 
                     (guestData.tripDuration === days
-                      ? 'border-green-500 bg-green-50 text-green-700'
-                      : 'border-gray-200 hover:border-green-300')}
+                      ? 'border-red-600 bg-red-100 text-red-800 shadow-lg transform scale-105'
+                      : 'border-red-200 hover:border-red-400 hover:bg-red-50 text-red-700')}
                 >
                   {days} day{days > 1 ? 's' : ''}
                 </button>
@@ -550,11 +553,11 @@ function App() {
             </div>
           </div>
 
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+          <div className="mb-8">
+            <label className="block text-lg font-semibold text-red-800 mb-4">
               What interests you most? (Select multiple)
             </label>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {[
                 { id: 'wine', label: '🍷 Wine Tasting', desc: 'Boutique wineries & tastings' },
                 { id: 'nature', label: '🌲 Nature', desc: 'Redwoods, rivers & trails' },
@@ -566,23 +569,23 @@ function App() {
                 <div
                   key={interest.id}
                   onClick={() => handleInterestChange(interest.id)}
-                  className={'p-4 rounded-lg border-2 cursor-pointer transition duration-200 ' + 
+                  className={'p-6 rounded-xl border-2 cursor-pointer transition duration-300 hover:shadow-lg ' + 
                     (guestData.interests.includes(interest.id)
-                      ? 'border-green-500 bg-green-50'
-                      : 'border-gray-200 hover:border-green-300')}
+                      ? 'border-red-600 bg-red-100 shadow-lg transform scale-105'
+                      : 'border-red-200 hover:border-red-400 hover:bg-red-50')}
                 >
-                  <div className="font-medium text-gray-800">{interest.label}</div>
-                  <div className="text-sm text-gray-600">{interest.desc}</div>
+                  <div className="font-semibold text-red-800 text-lg mb-2">{interest.label}</div>
+                  <div className="text-red-600">{interest.desc}</div>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+          <div className="mb-8">
+            <label className="block text-lg font-semibold text-red-800 mb-4">
               What's your travel style?
             </label>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
                 { id: 'stay-local', label: '🏡 Stay Local', desc: 'Within 10 minutes of the lodge' },
                 { id: 'relaxed', label: '🚗 Relaxed Explorer', desc: 'Up to 20 minutes drive' },
@@ -591,13 +594,13 @@ function App() {
                 <div
                   key={style.id}
                   onClick={() => setGuestData(prev => ({ ...prev, travelStyle: style.id }))}
-                  className={'p-4 rounded-lg border-2 cursor-pointer transition duration-200 ' + 
+                  className={'p-6 rounded-xl border-2 cursor-pointer transition duration-300 hover:shadow-lg ' + 
                     (guestData.travelStyle === style.id
-                      ? 'border-green-500 bg-green-50'
-                      : 'border-gray-200 hover:border-green-300')}
+                      ? 'border-red-600 bg-red-100 shadow-lg transform scale-105'
+                      : 'border-red-200 hover:border-red-400 hover:bg-red-50')}
                 >
-                  <div className="font-medium text-gray-800">{style.label}</div>
-                  <div className="text-sm text-gray-600">{style.desc}</div>
+                  <div className="font-semibold text-red-800 text-lg mb-2">{style.label}</div>
+                  <div className="text-red-600">{style.desc}</div>
                 </div>
               ))}
             </div>
@@ -607,15 +610,15 @@ function App() {
             <button 
               onClick={generateItinerary}
               disabled={isGenerating}
-              className="w-full bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold py-4 px-8 rounded-xl hover:from-green-700 hover:to-green-800 transition duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-gradient-to-r from-red-700 via-red-800 to-red-900 text-white font-bold py-6 px-8 rounded-xl hover:from-red-800 hover:to-red-900 transition duration-300 shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 text-xl"
             >
               {isGenerating ? 'Creating Your Perfect Itinerary...' : 'Create My Curated Itinerary'}
             </button>
             
             {error && (
-              <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-                <p className="text-red-700">{error}</p>
-                <p className="text-sm text-red-600 mt-2">
+              <div className="mt-6 p-6 bg-red-50 border-2 border-red-200 rounded-xl">
+                <p className="text-red-800 font-semibold">{error}</p>
+                <p className="text-red-600 mt-2">
                   Need help? Contact our concierge at {contact.phone} or {contact.email}
                 </p>
               </div>
@@ -624,70 +627,74 @@ function App() {
         </div>
 
         {itinerary.length > 0 && (
-          <div className="space-y-6">
-            <h2 className="text-3xl font-bold text-gray-800 text-center mb-8">
+          <div className="space-y-8">
+            <h2 className="text-4xl font-bold text-amber-100 text-center mb-12">
               Your Curated {guestData.tripDuration}-Day Experience
             </h2>
 
             {itinerary.map((day, index) => (
-              <div key={index} className="bg-white rounded-xl shadow-lg overflow-hidden">
-                <div className="bg-gradient-to-r from-green-600 to-green-700 px-6 py-4">
-                  <h3 className="text-xl font-bold text-white">
+              <div key={index} className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden border border-amber-200">
+                <div className="bg-gradient-to-r from-red-700 via-red-800 to-red-900 px-8 py-6">
+                  <h3 className="text-2xl font-bold text-amber-100">
                     Day {day.day}
                   </h3>
                 </div>
 
-                <div className="p-6">
-                  <div className="space-y-6">
+                <div className="p-8">
+                  <div className="space-y-8">
                     {day.activities.map((item, activityIndex) => (
-                      <div key={activityIndex} className="flex gap-4 p-4 bg-gray-50 rounded-lg">
+                      <div key={activityIndex} className="flex gap-6 p-6 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl border border-amber-200 shadow-lg">
                         <div className="flex-shrink-0">
-                          <div className="w-16 h-16 bg-green-100 rounded-lg flex items-center justify-center">
-                            <span className="text-green-700 font-semibold text-sm">
+                          <div className="w-20 h-20 bg-gradient-to-br from-red-600 to-red-800 rounded-xl flex items-center justify-center shadow-lg">
+                            <span className="text-amber-100 font-bold text-sm text-center">
                               {item.time}
                             </span>
                           </div>
                         </div>
 
                         <div className="flex-grow">
-                          <div className="flex items-start justify-between mb-2">
-                            <h4 className="text-lg font-semibold text-gray-800">
+                          <div className="flex items-start justify-between mb-3">
+                            <h4 className="text-xl font-bold text-red-900">
                               {item.activity.name}
                             </h4>
-                            <div className="flex items-center gap-1">
-                              <span className="text-yellow-400">★</span>
-                              <span className="text-sm text-gray-600">{item.activity.rating}</span>
+                            <div className="flex items-center gap-2 bg-amber-100 px-3 py-1 rounded-full">
+                              <span className="text-amber-600">★</span>
+                              <span className="text-sm font-semibold text-amber-800">{item.activity.rating}</span>
                             </div>
                           </div>
 
-                          <p className="text-sm text-green-600 font-medium mb-2">
+                          <p className="text-red-700 font-semibold mb-3 text-lg">
                             {item.activity.type} • {item.activity.priceRange}
                           </p>
 
-                          <p className="text-gray-700 mb-3">
+                          <p className="text-gray-800 mb-4 leading-relaxed">
                             {item.activity.description}
                           </p>
 
-                          <div className="bg-blue-50 border-l-4 border-blue-400 p-3 mb-3">
-                            <p className="text-sm text-blue-800">
-                              <span className="font-medium">Insider Tip:</span> {item.activity.localInsight}
+                          <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-4 rounded-r-lg">
+                            <p className="text-blue-900">
+                              <span className="font-bold">Insider Tip:</span> {item.activity.localInsight}
                             </p>
                           </div>
 
-                          <div className="flex items-center gap-2 text-sm text-green-600 mb-2">
-                            <span className="w-2 h-2 bg-green-400 rounded-full"></span>
-                            Drive time from lodge: {item.activity.driveTime}
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-3 text-red-700">
+                              <span className="w-3 h-3 bg-red-500 rounded-full"></span>
+                              <span className="font-semibold">Drive time from lodge: {item.activity.driveTime}</span>
+                            </div>
+                            {item.activity.contact && (
+                              <div className="flex items-center gap-3 text-gray-700">
+                                <span className="text-lg">📞</span>
+                                <span>{item.activity.contact}</span>
+                              </div>
+                            )}
+                            {item.activity.address && (
+                              <div className="flex items-center gap-3 text-gray-700">
+                                <span className="text-lg">📍</span>
+                                <span>{item.activity.address}</span>
+                              </div>
+                            )}
                           </div>
-                          {item.activity.contact && (
-                            <div className="text-sm text-gray-600 mb-2">
-                              📞 {item.activity.contact}
-                            </div>
-                          )}
-                          {item.activity.address && (
-                            <div className="text-sm text-gray-600 mb-2">
-                              📍 {item.activity.address}
-                            </div>
-                          )}
                         </div>
                       </div>
                     ))}
@@ -696,17 +703,23 @@ function App() {
               </div>
             ))}
 
-            <div className="bg-green-50 border border-green-200 rounded-xl p-6 text-center">
-              <h3 className="text-lg font-semibold text-green-800 mb-2">
+            <div className="bg-gradient-to-r from-amber-100 to-orange-100 border-2 border-amber-300 rounded-2xl p-8 text-center shadow-2xl">
+              <h3 className="text-2xl font-bold text-red-900 mb-4">
                 Need Assistance?
               </h3>
-              <p className="text-green-700 mb-4">
+              <p className="text-red-800 mb-6 text-lg">
                 Our concierge team is here to help with reservations, directions, and recommendations.
               </p>
-              <div className="space-y-2 text-sm text-green-600">
-                <p>📞 {contact.phone}</p>
-                <p>✉️ {contact.email}</p>
-                <p>🕐 {contact.hours}</p>
+              <div className="space-y-3 text-red-700">
+                <p className="flex items-center justify-center gap-3 text-lg">
+                  <span>📞</span> {contact.phone}
+                </p>
+                <p className="flex items-center justify-center gap-3 text-lg">
+                  <span>✉️</span> {contact.email}
+                </p>
+                <p className="flex items-center justify-center gap-3 text-lg">
+                  <span>🕐</span> {contact.hours}
+                </p>
               </div>
             </div>
           </div>
