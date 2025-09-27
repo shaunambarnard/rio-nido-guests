@@ -12,7 +12,6 @@ function App() {
   const [error, setError] = useState(null);
   const [itinerary, setItinerary] = useState([]);
 
-  // Contact and location information
   const contact = {
     email: 'concierge@rionidolodge.com',
     phone: '(707) 869-0821',
@@ -21,7 +20,6 @@ function App() {
     hours: 'Concierge available 8:00 AM - 8:00 PM daily'
   };
 
-  // Hyperlocal businesses database
   const hyperlocalBusinesses = {
     'Rio Nido Lodge': {
       dining: [
@@ -333,7 +331,6 @@ function App() {
     }
   };
 
-  // Create balanced daily mixes to avoid category clustering
   const createBalancedDailyMix = (dayNumber, interests) => {
     const interestRotations = {
       1: interests.length >= 3 ? [interests[0], interests[1], interests[2]] : 
@@ -347,16 +344,13 @@ function App() {
          [interests[0], interests[0], interests[0]]
     };
     
-    // Rotate interests for days beyond 3
     const rotationKey = ((dayNumber - 1) % 3) + 1;
     return interestRotations[rotationKey];
   };
 
-  // Get best business for specific time slot and interest with geographic efficiency
   const getBestBusinessForSlot = (timeSlot, interest, usedBusinesses, dayNumber) => {
     const neighborhoodBusinesses = hyperlocalBusinesses[guestData.neighborhood] || {};
     
-    // Define appropriate business categories for each time slot
     const timeSlotMapping = {
       'morning': ['wine', 'nature', 'wellness', 'shopping', 'adventure'],
       'lunch': ['dining'],
@@ -364,7 +358,6 @@ function App() {
       'evening': ['dining', 'wine', 'wellness']
     };
     
-    // For lunch, always use dining
     const targetCategory = timeSlot === 'lunch' ? 'dining' : interest;
     const validCategories = timeSlot === 'lunch' ? ['dining'] : timeSlotMapping[timeSlot] || [];
     
@@ -374,13 +367,11 @@ function App() {
     
     const businessPool = neighborhoodBusinesses[targetCategory] || [];
     
-    // Filter by business hours and usage
     const availableBusinesses = businessPool.filter(business => {
       if (usedBusinesses.has(business.name)) return false;
       
-      // Check if business is open during time slot
       const hours = business.hours;
-      if (!hours) return true; // Assume open if no hours specified
+      if (!hours) return true;
       
       const timeSlotHours = {
         'morning': 9,
@@ -393,44 +384,24 @@ function App() {
       return slotHour >= hours.open && slotHour < hours.close;
     });
     
-    // Enhanced error handling and fallback logic
     if (availableBusinesses.length === 0) {
-      // Intelligent fallback system
-      console.log(`No businesses found for ${targetCategory} at ${timeSlot}, trying fallback options...`);
-      
-      // Fallback 1: Try any business in valid categories for this time slot
-      const validCategories = timeSlotMapping[timeSlot] || [];
       const fallbackBusinesses = validCategories.flatMap(cat => 
         (neighborhoodBusinesses[cat] || []).filter(b => !usedBusinesses.has(b.name))
       );
       
       if (fallbackBusinesses.length > 0) {
-        console.log(`Found fallback business: ${fallbackBusinesses[0].name}`);
         return fallbackBusinesses[0];
       }
       
-      // Fallback 2: Try any available business regardless of time slot
       const anyAvailableBusiness = Object.values(neighborhoodBusinesses)
         .flat()
         .find(b => !usedBusinesses.has(b.name));
       
-      if (anyAvailableBusiness) {
-        console.log(`Using emergency fallback: ${anyAvailableBusiness.name}`);
-        return anyAvailableBusiness;
-      }
-      
-      console.log(`No businesses available for day slot`);
-      return null;
+      return anyAvailableBusiness || null;
     }
     
-    // Prioritize based on geographic efficiency for multi-day trips
     if (guestData.tripDuration > 1) {
-      // Day 1: Stay local (lodge/guerneville area)
-      // Day 2: Wine region or nearby attractions  
-      // Day 3: Coastal adventure (if travel style allows)
-      
       if (dayNumber === 1) {
-        // Prefer businesses closer to lodge
         const localBusinesses = availableBusinesses.filter(b => 
           b.driveTime && (b.driveTime.includes('walk') || parseInt(b.driveTime) <= 10)
         );
@@ -438,7 +409,6 @@ function App() {
           return localBusinesses[Math.floor(Math.random() * localBusinesses.length)];
         }
       } else if (dayNumber === 2 && targetCategory === 'wine') {
-        // Prefer wine businesses with moderate drive times
         const wineBusinesses = availableBusinesses.filter(b => 
           b.driveTime && parseInt(b.driveTime) >= 8 && parseInt(b.driveTime) <= 15
         );
@@ -446,7 +416,6 @@ function App() {
           return wineBusinesses[Math.floor(Math.random() * wineBusinesses.length)];
         }
       } else if (dayNumber === 3 && guestData.travelStyle === 'day-trips') {
-        // Allow coastal businesses for adventurous travelers
         const coastalBusinesses = availableBusinesses.filter(b => 
           b.cluster === 'coastal' || (b.driveTime && parseInt(b.driveTime) >= 15)
         );
@@ -456,11 +425,9 @@ function App() {
       }
     }
     
-    // Default: random selection from available businesses
     return availableBusinesses[Math.floor(Math.random() * availableBusinesses.length)];
   };
 
-  // Enhanced UI with better feedback and loading states
   const generateItinerary = () => {
     setIsGenerating(true);
     setError(null);
@@ -469,27 +436,10 @@ function App() {
       const days = [];
       const usedBusinesses = new Set();
       
-      // Validate that we have enough businesses for the trip
-      const neighborhoodBusinesses = hyperlocalBusinesses[guestData.neighborhood] || {};
-      const totalAvailableBusinesses = Object.values(neighborhoodBusinesses)
-        .flat().length;
-      
-      const requiredBusinesses = guestData.tripDuration * 3; // 3 activities per day
-      
-      if (totalAvailableBusinesses < requiredBusinesses) {
-        console.warn(`Limited business pool: ${totalAvailableBusinesses} available for ${requiredBusinesses} needed`);
-      }
-      
-      // Create balanced daily schedules with variety
       for (let day = 1; day <= guestData.tripDuration; day++) {
         const dayActivities = [];
-        
-        // Create a balanced mix of interests for each day
         const dailyInterestMix = createBalancedDailyMix(day, guestData.interests);
         
-        console.log(`Planning Day ${day} with mix: ${dailyInterestMix.join(', ')}`);
-        
-        // Morning activity (9:00-11:00 AM)
         const morningActivity = getBestBusinessForSlot('morning', dailyInterestMix[0], usedBusinesses, day);
         if (morningActivity) {
           dayActivities.push({
@@ -500,7 +450,6 @@ function App() {
           usedBusinesses.add(morningActivity.name);
         }
         
-        // Lunch break (11:30 AM - 1:00 PM)
         const lunchActivity = getBestBusinessForSlot('lunch', 'dining', usedBusinesses, day);
         if (lunchActivity) {
           dayActivities.push({
@@ -511,7 +460,6 @@ function App() {
           usedBusinesses.add(lunchActivity.name);
         }
         
-        // Afternoon activity (2:00-4:00 PM)
         const afternoonActivity = getBestBusinessForSlot('afternoon', dailyInterestMix[1], usedBusinesses, day);
         if (afternoonActivity) {
           dayActivities.push({
@@ -522,7 +470,6 @@ function App() {
           usedBusinesses.add(afternoonActivity.name);
         }
         
-        // Evening activity (5:00-7:00 PM)  
         const eveningActivity = getBestBusinessForSlot('evening', dailyInterestMix[2], usedBusinesses, day);
         if (eveningActivity) {
           dayActivities.push({
@@ -533,9 +480,8 @@ function App() {
           usedBusinesses.add(eveningActivity.name);
         }
         
-        // Ensure day has at least one activity
         if (dayActivities.length === 0) {
-          setError(`Unable to generate activities for Day ${day}. Please try different preferences or contact our concierge.`);
+          setError('Unable to generate activities for Day ' + day + '. Please try different preferences or contact our concierge.');
           setIsGenerating(false);
           return;
         }
@@ -547,10 +493,8 @@ function App() {
       }
       
       setItinerary(days);
-      console.log(`Successfully generated ${days.length}-day itinerary with ${days.reduce((sum, day) => sum + day.activities.length, 0)} total activities`);
       
     } catch (error) {
-      console.error('Error generating itinerary:', error);
       setError('Unable to generate your itinerary. Please try again or contact our concierge for assistance.');
     } finally {
       setIsGenerating(false);
@@ -569,7 +513,6 @@ function App() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
       <div className="container mx-auto px-4 py-8">
-        {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-green-800 mb-2">
             🏨 Rio Nido Lodge
@@ -582,13 +525,11 @@ function App() {
           </p>
         </div>
 
-        {/* Guest Preferences Form */}
         <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
           <h2 className="text-2xl font-semibold text-gray-800 mb-6">
             Tell Us About Your Perfect Trip
           </h2>
 
-          {/* Trip Duration */}
           <div className="mb-6">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               How many days will you be staying?
@@ -598,11 +539,10 @@ function App() {
                 <button
                   key={days}
                   onClick={() => setGuestData(prev => ({ ...prev, tripDuration: days }))}
-                  className={`px-4 py-2 rounded-lg border-2 transition duration-200 ${
-                    guestData.tripDuration === days
+                  className={'px-4 py-2 rounded-lg border-2 transition duration-200 ' + 
+                    (guestData.tripDuration === days
                       ? 'border-green-500 bg-green-50 text-green-700'
-                      : 'border-gray-200 hover:border-green-300'
-                  }`}
+                      : 'border-gray-200 hover:border-green-300')}
                 >
                   {days} day{days > 1 ? 's' : ''}
                 </button>
@@ -610,7 +550,6 @@ function App() {
             </div>
           </div>
 
-          {/* Interests */}
           <div className="mb-6">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               What interests you most? (Select multiple)
@@ -627,11 +566,154 @@ function App() {
                 <div
                   key={interest.id}
                   onClick={() => handleInterestChange(interest.id)}
-                  className={`p-4 rounded-lg border-2 cursor-pointer transition duration-200 ${
-                    guestData.interests.includes(interest.id)
+                  className={'p-4 rounded-lg border-2 cursor-pointer transition duration-200 ' + 
+                    (guestData.interests.includes(interest.id)
                       ? 'border-green-500 bg-green-50'
-                      : 'border-gray-200 hover:border-green-300'
-                  }`}
+                      : 'border-gray-200 hover:border-green-300')}
                 >
                   <div className="font-medium text-gray-800">{interest.label}</div>
                   <div className="text-sm text-gray-600">{interest.desc}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              What's your travel style?
+            </label>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              {[
+                { id: 'stay-local', label: '🏡 Stay Local', desc: 'Within 10 minutes of the lodge' },
+                { id: 'relaxed', label: '🚗 Relaxed Explorer', desc: 'Up to 20 minutes drive' },
+                { id: 'day-trips', label: '🗺️ Day Trip Adventurer', desc: 'Willing to drive 30+ minutes' }
+              ].map(style => (
+                <div
+                  key={style.id}
+                  onClick={() => setGuestData(prev => ({ ...prev, travelStyle: style.id }))}
+                  className={'p-4 rounded-lg border-2 cursor-pointer transition duration-200 ' + 
+                    (guestData.travelStyle === style.id
+                      ? 'border-green-500 bg-green-50'
+                      : 'border-gray-200 hover:border-green-300')}
+                >
+                  <div className="font-medium text-gray-800">{style.label}</div>
+                  <div className="text-sm text-gray-600">{style.desc}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="text-center">
+            <button 
+              onClick={generateItinerary}
+              disabled={isGenerating}
+              className="w-full bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold py-4 px-8 rounded-xl hover:from-green-700 hover:to-green-800 transition duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isGenerating ? 'Creating Your Perfect Itinerary...' : 'Create My Curated Itinerary'}
+            </button>
+            
+            {error && (
+              <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-red-700">{error}</p>
+                <p className="text-sm text-red-600 mt-2">
+                  Need help? Contact our concierge at {contact.phone} or {contact.email}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {itinerary.length > 0 && (
+          <div className="space-y-6">
+            <h2 className="text-3xl font-bold text-gray-800 text-center mb-8">
+              Your Curated {guestData.tripDuration}-Day Experience
+            </h2>
+
+            {itinerary.map((day, index) => (
+              <div key={index} className="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div className="bg-gradient-to-r from-green-600 to-green-700 px-6 py-4">
+                  <h3 className="text-xl font-bold text-white">
+                    Day {day.day}
+                  </h3>
+                </div>
+
+                <div className="p-6">
+                  <div className="space-y-6">
+                    {day.activities.map((item, activityIndex) => (
+                      <div key={activityIndex} className="flex gap-4 p-4 bg-gray-50 rounded-lg">
+                        <div className="flex-shrink-0">
+                          <div className="w-16 h-16 bg-green-100 rounded-lg flex items-center justify-center">
+                            <span className="text-green-700 font-semibold text-sm">
+                              {item.time}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="flex-grow">
+                          <div className="flex items-start justify-between mb-2">
+                            <h4 className="text-lg font-semibold text-gray-800">
+                              {item.activity.name}
+                            </h4>
+                            <div className="flex items-center gap-1">
+                              <span className="text-yellow-400">★</span>
+                              <span className="text-sm text-gray-600">{item.activity.rating}</span>
+                            </div>
+                          </div>
+
+                          <p className="text-sm text-green-600 font-medium mb-2">
+                            {item.activity.type} • {item.activity.priceRange}
+                          </p>
+
+                          <p className="text-gray-700 mb-3">
+                            {item.activity.description}
+                          </p>
+
+                          <div className="bg-blue-50 border-l-4 border-blue-400 p-3 mb-3">
+                            <p className="text-sm text-blue-800">
+                              <span className="font-medium">Insider Tip:</span> {item.activity.localInsight}
+                            </p>
+                          </div>
+
+                          <div className="flex items-center gap-2 text-sm text-green-600 mb-2">
+                            <span className="w-2 h-2 bg-green-400 rounded-full"></span>
+                            Drive time from lodge: {item.activity.driveTime}
+                          </div>
+                          {item.activity.contact && (
+                            <div className="text-sm text-gray-600 mb-2">
+                              📞 {item.activity.contact}
+                            </div>
+                          )}
+                          {item.activity.address && (
+                            <div className="text-sm text-gray-600 mb-2">
+                              📍 {item.activity.address}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            <div className="bg-green-50 border border-green-200 rounded-xl p-6 text-center">
+              <h3 className="text-lg font-semibold text-green-800 mb-2">
+                Need Assistance?
+              </h3>
+              <p className="text-green-700 mb-4">
+                Our concierge team is here to help with reservations, directions, and recommendations.
+              </p>
+              <div className="space-y-2 text-sm text-green-600">
+                <p>📞 {contact.phone}</p>
+                <p>✉️ {contact.email}</p>
+                <p>🕐 {contact.hours}</p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default App;
