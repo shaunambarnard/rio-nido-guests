@@ -11,6 +11,7 @@ function App() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState(null);
   const [itinerary, setItinerary] = useState([]);
+  const [showSignatureExperiences, setShowSignatureExperiences] = useState(false);
 
   const contact = {
     email: 'concierge@rionidolodge.com',
@@ -19,6 +20,88 @@ function App() {
     website: 'https://rionidolodge.com',
     hours: 'Concierge available 8:00 AM - 8:00 PM daily'
   };
+
+  // Signature Experiences within 15 miles
+  const signatureExperiences = [
+    {
+      id: 'redwood_meditation',
+      name: 'Private Redwood Grove Meditation',
+      description: 'Guided meditation among 800-year-old redwoods at dawn',
+      location: 'Armstrong Redwoods State Natural Reserve',
+      distance: '8 miles',
+      duration: '90 minutes',
+      priceRange: '$$$',
+      bookingRequired: true,
+      maxGuests: 6,
+      bestTime: 'sunrise',
+      localInsight: 'This grove has trees that were saplings when the Vikings reached America'
+    },
+    {
+      id: 'hidden_winery_tour',
+      name: 'Secret Cellar Wine Experience',
+      description: 'Private tour of hidden wine cellars with the winemaker',
+      location: 'Undisclosed boutique winery',
+      distance: '12 miles',
+      duration: '2 hours',
+      priceRange: '$$$',
+      bookingRequired: true,
+      maxGuests: 8,
+      bestTime: 'afternoon',
+      localInsight: 'Access to wines not available to the public - some bottles are $300+'
+    },
+    {
+      id: 'russian_river_glamping',
+      name: 'Luxury River Glamping Experience',
+      description: 'Overnight glamping with gourmet meals and river activities',
+      location: 'Private riverfront property',
+      distance: '5 miles',
+      duration: 'overnight',
+      priceRange: '$$$$',
+      bookingRequired: true,
+      maxGuests: 4,
+      bestTime: 'sunset to sunrise',
+      localInsight: 'The only luxury glamping directly on the Russian River - completely private'
+    },
+    {
+      id: 'foraging_feast',
+      name: 'Wild Mushroom Foraging & Chef Dinner',
+      description: 'Guided foraging followed by a multi-course feast using your finds',
+      location: 'Private redwood grove',
+      distance: '15 miles',
+      duration: '6 hours',
+      priceRange: '$$$',
+      bookingRequired: true,
+      maxGuests: 12,
+      bestTime: 'morning start',
+      localInsight: 'Michelin-trained chef creates dishes based on what you forage that day'
+    },
+    {
+      id: 'coastal_helicopter',
+      name: 'Private Coastal Helicopter Tour',
+      description: 'Helicopter tour of Sonoma Coast with wine country landing',
+      location: 'Departs from Guerneville',
+      distance: '0 miles',
+      duration: '3 hours',
+      priceRange: '$$$$',
+      bookingRequired: true,
+      maxGuests: 3,
+      bestTime: 'golden hour',
+      localInsight: 'Land at a private vineyard for exclusive tasting - only accessible by air'
+    },
+    {
+      id: 'artisan_workshop',
+      name: 'Master Craftsman Workshop Series',
+      description: 'Learn traditional crafts from local artisan masters',
+      location: 'Historic Sebastopol workshop',
+      distance: '18 miles',
+      duration: '4 hours',
+      priceRange: '$$',
+      bookingRequired: true,
+      maxGuests: 6,
+      bestTime: 'morning',
+      localInsight: 'These artisans supply galleries in San Francisco and Napa Valley'
+    }
+  ];
 
   const hyperlocalBusinesses = {
     'Rio Nido Lodge': {
@@ -511,24 +594,33 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-900 via-red-800 to-amber-900">
+    <div className="min-h-screen bg-gradient-to-br from-red-900 via-red-800 to-red-700">
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full mb-6 shadow-2xl">
-            <span className="text-4xl">🏨</span>
+          <div className="inline-flex items-center justify-center w-32 h-32 mb-6">
+            <div className="relative">
+              <div className="w-32 h-32 bg-gradient-to-br from-red-600 to-red-800 rounded-full shadow-2xl flex items-center justify-center border-4 border-yellow-400">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-yellow-400 leading-tight">RN</div>
+                </div>
+              </div>
+              <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center">
+                <span className="text-red-800 text-sm font-bold">★</span>
+              </div>
+            </div>
           </div>
-          <h1 className="text-5xl md:text-6xl font-bold text-amber-100 mb-4 tracking-wide">
+          <h1 className="text-5xl md:text-6xl font-bold text-yellow-400 mb-4 tracking-wide">
             Rio Nido Lodge
           </h1>
-          <p className="text-xl text-amber-200 mb-4 font-light">
+          <p className="text-xl text-yellow-200 mb-4 font-light">
             Curated Russian River Valley Experiences
           </p>
-          <p className="text-sm text-amber-300 opacity-90">
+          <p className="text-sm text-yellow-300 opacity-90">
             {contact.address} • {contact.phone}
           </p>
         </div>
 
-        <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-8 mb-8 border border-amber-200">
+        <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-8 mb-8 border border-yellow-400">
           <h2 className="text-3xl font-bold text-red-900 mb-8 text-center">
             Tell Us About Your Perfect Trip
           </h2>
@@ -549,184 +641,3 @@ function App() {
                 >
                   {days} day{days > 1 ? 's' : ''}
                 </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="mb-8">
-            <label className="block text-lg font-semibold text-red-800 mb-4">
-              What interests you most? (Select multiple)
-            </label>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {[
-                { id: 'wine', label: '🍷 Wine Tasting', desc: 'Boutique wineries & tastings' },
-                { id: 'nature', label: '🌲 Nature', desc: 'Redwoods, rivers & trails' },
-                { id: 'wellness', label: '🧘 Wellness', desc: 'Spas, yoga & relaxation' },
-                { id: 'dining', label: '🍽️ Dining', desc: 'Farm-to-table & local cuisine' },
-                { id: 'adventure', label: '🚣 Adventure', desc: 'Kayaking, hiking & outdoor fun' },
-                { id: 'shopping', label: '🛍️ Shopping', desc: 'Local crafts & unique finds' }
-              ].map(interest => (
-                <div
-                  key={interest.id}
-                  onClick={() => handleInterestChange(interest.id)}
-                  className={'p-6 rounded-xl border-2 cursor-pointer transition duration-300 hover:shadow-lg ' + 
-                    (guestData.interests.includes(interest.id)
-                      ? 'border-red-600 bg-red-100 shadow-lg transform scale-105'
-                      : 'border-red-200 hover:border-red-400 hover:bg-red-50')}
-                >
-                  <div className="font-semibold text-red-800 text-lg mb-2">{interest.label}</div>
-                  <div className="text-red-600">{interest.desc}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="mb-8">
-            <label className="block text-lg font-semibold text-red-800 mb-4">
-              What's your travel style?
-            </label>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {[
-                { id: 'stay-local', label: '🏡 Stay Local', desc: 'Within 10 minutes of the lodge' },
-                { id: 'relaxed', label: '🚗 Relaxed Explorer', desc: 'Up to 20 minutes drive' },
-                { id: 'day-trips', label: '🗺️ Day Trip Adventurer', desc: 'Willing to drive 30+ minutes' }
-              ].map(style => (
-                <div
-                  key={style.id}
-                  onClick={() => setGuestData(prev => ({ ...prev, travelStyle: style.id }))}
-                  className={'p-6 rounded-xl border-2 cursor-pointer transition duration-300 hover:shadow-lg ' + 
-                    (guestData.travelStyle === style.id
-                      ? 'border-red-600 bg-red-100 shadow-lg transform scale-105'
-                      : 'border-red-200 hover:border-red-400 hover:bg-red-50')}
-                >
-                  <div className="font-semibold text-red-800 text-lg mb-2">{style.label}</div>
-                  <div className="text-red-600">{style.desc}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="text-center">
-            <button 
-              onClick={generateItinerary}
-              disabled={isGenerating}
-              className="w-full bg-gradient-to-r from-red-700 via-red-800 to-red-900 text-white font-bold py-6 px-8 rounded-xl hover:from-red-800 hover:to-red-900 transition duration-300 shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 text-xl"
-            >
-              {isGenerating ? 'Creating Your Perfect Itinerary...' : 'Create My Curated Itinerary'}
-            </button>
-            
-            {error && (
-              <div className="mt-6 p-6 bg-red-50 border-2 border-red-200 rounded-xl">
-                <p className="text-red-800 font-semibold">{error}</p>
-                <p className="text-red-600 mt-2">
-                  Need help? Contact our concierge at {contact.phone} or {contact.email}
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {itinerary.length > 0 && (
-          <div className="space-y-8">
-            <h2 className="text-4xl font-bold text-amber-100 text-center mb-12">
-              Your Curated {guestData.tripDuration}-Day Experience
-            </h2>
-
-            {itinerary.map((day, index) => (
-              <div key={index} className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden border border-amber-200">
-                <div className="bg-gradient-to-r from-red-700 via-red-800 to-red-900 px-8 py-6">
-                  <h3 className="text-2xl font-bold text-amber-100">
-                    Day {day.day}
-                  </h3>
-                </div>
-
-                <div className="p-8">
-                  <div className="space-y-8">
-                    {day.activities.map((item, activityIndex) => (
-                      <div key={activityIndex} className="flex gap-6 p-6 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl border border-amber-200 shadow-lg">
-                        <div className="flex-shrink-0">
-                          <div className="w-20 h-20 bg-gradient-to-br from-red-600 to-red-800 rounded-xl flex items-center justify-center shadow-lg">
-                            <span className="text-amber-100 font-bold text-sm text-center">
-                              {item.time}
-                            </span>
-                          </div>
-                        </div>
-
-                        <div className="flex-grow">
-                          <div className="flex items-start justify-between mb-3">
-                            <h4 className="text-xl font-bold text-red-900">
-                              {item.activity.name}
-                            </h4>
-                            <div className="flex items-center gap-2 bg-amber-100 px-3 py-1 rounded-full">
-                              <span className="text-amber-600">★</span>
-                              <span className="text-sm font-semibold text-amber-800">{item.activity.rating}</span>
-                            </div>
-                          </div>
-
-                          <p className="text-red-700 font-semibold mb-3 text-lg">
-                            {item.activity.type} • {item.activity.priceRange}
-                          </p>
-
-                          <p className="text-gray-800 mb-4 leading-relaxed">
-                            {item.activity.description}
-                          </p>
-
-                          <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-4 rounded-r-lg">
-                            <p className="text-blue-900">
-                              <span className="font-bold">Insider Tip:</span> {item.activity.localInsight}
-                            </p>
-                          </div>
-
-                          <div className="space-y-2">
-                            <div className="flex items-center gap-3 text-red-700">
-                              <span className="w-3 h-3 bg-red-500 rounded-full"></span>
-                              <span className="font-semibold">Drive time from lodge: {item.activity.driveTime}</span>
-                            </div>
-                            {item.activity.contact && (
-                              <div className="flex items-center gap-3 text-gray-700">
-                                <span className="text-lg">📞</span>
-                                <span>{item.activity.contact}</span>
-                              </div>
-                            )}
-                            {item.activity.address && (
-                              <div className="flex items-center gap-3 text-gray-700">
-                                <span className="text-lg">📍</span>
-                                <span>{item.activity.address}</span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ))}
-
-            <div className="bg-gradient-to-r from-amber-100 to-orange-100 border-2 border-amber-300 rounded-2xl p-8 text-center shadow-2xl">
-              <h3 className="text-2xl font-bold text-red-900 mb-4">
-                Need Assistance?
-              </h3>
-              <p className="text-red-800 mb-6 text-lg">
-                Our concierge team is here to help with reservations, directions, and recommendations.
-              </p>
-              <div className="space-y-3 text-red-700">
-                <p className="flex items-center justify-center gap-3 text-lg">
-                  <span>📞</span> {contact.phone}
-                </p>
-                <p className="flex items-center justify-center gap-3 text-lg">
-                  <span>✉️</span> {contact.email}
-                </p>
-                <p className="flex items-center justify-center gap-3 text-lg">
-                  <span>🕐</span> {contact.hours}
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-export default App;
